@@ -4,41 +4,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Register</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <title>Register | Task Manager</title>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-
-    <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Create an Account</h2>
-
-        {% if error %}
-            <p class="bg-red-100 text-red-600 p-2 rounded mb-4">{{ error }}</p>
-        {% endif %}
-
-        <form action="{{ url_for('views.register') }}" method="POST" class="space-y-4">
-            <input type="text" name="username" placeholder="Username" required 
-            class="w-full p-2 border border-gray-300 rounded">
+<body class="bg-gradient-to-br from-primary-100 to-primary-200 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+            <!-- Header with wave design -->
+            <div class="bg-primary-600 px-8 pt-8 pb-16 relative">
+                <div class="text-white text-center">
+                    <h2 class="text-3xl font-bold">Join Task Manager</h2>
+                    <p class="text-primary-100 mt-2">Create your account to get started</p>
+                </div>
+                <!-- Decorative wave -->
+                <div class="absolute -bottom-5 left-0 right-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full">
+                        <path fill="#ffffff" fill-opacity="1" d="M0,160L48,154.7C96,149,192,139,288,144C384,149,480,171,576,181.3C672,192,768,192,864,176C960,160,1056,128,1152,128C1248,128,1344,160,1392,176L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                    </svg>
+                </div>
+            </div>
             
-            <input type="text" name="name" placeholder="Name" required 
-            class="w-full p-2 border border-gray-300 rounded">
-
-            <input type="email" name="email" placeholder="Email" required 
-                class="w-full p-2 border border-gray-300 rounded">
-
-            <input type="password" name="password" placeholder="Password" required 
-                class="w-full p-2 border border-gray-300 rounded">
-
-            <button type="submit" 
-                class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-                Register
-            </button>
-        </form>
-
-        <p class="mt-4 text-gray-600 text-center">
-            Already have an account? 
-            <a href="{{ url_for('views.login') }}" class="text-blue-500 hover:underline">Login</a>
-        </p>
+            <!-- Form container with negative margin to overlap the wave -->
+            <div class="px-8 pt-6 pb-8 -mt-6 relative z-10">
+                {% if error %}
+                    <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <p>{{ error }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <form action="{{ url_for('views.register') }}" method="POST">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-semibold mb-2" for="username">
+                            Username
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input id="username" name="username" type="text" required
+                                   class="appearance-none border-2 border-gray-200 rounded-lg w-full py-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:border-primary-500">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-semibold mb-2" for="name">
+                            Full Name
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                            <input id="name" name="name" type="text" required
+                                   class="appearance-none border-2 border-gray-200 rounded-lg w-full py-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:border-primary-500">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-semibold mb-2" for="email">
+                            Email
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input id="email" name="email" type="email" required
+                                   class="appearance-none border-2 border-gray-200 rounded-lg w-full py-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:border-primary-500">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-semibold mb-2" for="password">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input id="password" name="password" type="password" required
+                                   class="appearance-none border-2 border-gray-200 rounded-lg w-full py-3 pl-10 text-gray-700 leading-tight focus:outline-none focus:border-primary-500">
+                        </div>
+                    </div>
+                    
+                    <button type="submit"
+                            class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:-translate-y-1">
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            <span>Create Account</span>
+                        </div>
+                    </button>
+                </form>
+                
+                <div class="text-center mt-8">
+                    <p class="text-gray-600">
+                        Already have an account? 
+                        <a href="{{ url_for('views.login') }}" class="text-primary-600 hover:text-primary-800 font-semibold">Login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-
 </body>
 </html>

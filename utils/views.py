@@ -1,8 +1,8 @@
-from flask import(request, jsonify, Blueprint, redirect, render_template, url_for, session)
+from flask import(request, Blueprint, redirect, render_template, url_for, session)
 from utils.storage import Storage
 import utils.logger as logger
 from utils.auth import AuthenticationManager
-import os, uuid
+import uuid
 
 views = Blueprint('views', __name__)
 
@@ -16,7 +16,7 @@ def home():
         tasks = data.get("tasks", [])
         return render_template("home.html", tasks=tasks)  # Render home overview page if logged in
     else:
-        return redirect(url_for("views.login")) 
+        return render_template("index.html")
     
 @views.route('/register', methods=['GET', 'POST'])
 def register():
@@ -55,7 +55,7 @@ def register():
 @views.route('/login', methods=['GET', 'POST'])
 def login():
     if session.get("user_id"):
-        return redirect(url_for("views.get_tasks"))  # Add return here
+        return redirect(url_for("views.home"))  # Add return here
     
     elif request.method == 'GET':
         return render_template("login.html")
@@ -79,8 +79,9 @@ def login():
 
 @views.route('/logout', methods=['POST'])
 def logout():
-    session.pop("username")
-    session.pop("user_id")
+    if session.get("user_id") :
+        session.clear()
+        return redirect(url_for("views.login"))
     return redirect(url_for("views.login"))
 
 @views.route('/tasks', methods=['GET'])
@@ -93,7 +94,7 @@ def get_tasks():
     data = Storage.load_data(username)
     
     # Ensure tasks is a list
-    tasks = data.get("tasks", [])
+    tasks = data.get("tasks")
     
     return render_template("tasks.html", tasks=tasks)
 
@@ -129,14 +130,34 @@ def add_task():
 
 @views.route("/tasks/complete/<int:task_id>", methods=["POST"])
 def complete_task(task_id):
-    tasks=Storage.load_data(session.get("username"))["tasks"]
+    if session.get("user_id") == None:
+        return redirect(url_for("views.login"))
+     
+    username = session.get("username")
+    data =Storage.load_data(username)
+    tasks=data["tasks"]
     for task in tasks:
         if task["id"] == task_id:
             task["completed"] = True
             break
+    data["tasks"] = tasks
+    Storage.save_data(data, username)
     return redirect(url_for('views.get_tasks'))
 
 @views.route("/tasks/delete/<int:task_id>", methods=["POST"])
 def delete_task(task_id):
+    username = session.get("username")
+    if not username:
+        return redirect(url_for("views.login"))
+
+    data = Storage.load_data(username)
+    tasks = data.get("tasks", [])
+
+    # Find and remove the task
     tasks = [task for task in tasks if task["id"] != task_id]
-    return redirect(url_for('views.get_tasks'))
+    
+    # Save updated data
+    data["tasks"] = tasks
+    Storage.save_data(data, username)
+
+    return redirect(url_for("views.get_tasks"))
