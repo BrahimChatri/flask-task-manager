@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Login | Task Manager</title>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+    <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center text-gray-800">Task Manager</h2>
+        <p class="text-gray-500 text-center mb-6">Login to manage your tasks</p>
+        {% if error %}
+            <p class="bg-red-100 text-red-600 p-2 rounded mb-4">{{ error }}</p>
+        {% endif %}
+        <form action="{{ url_for('views.login') }}" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-gray-700">Username</label>
+                <input type="text" name="username" required 
+                       class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Password</label>
+                <input type="password"  name="password" required 
+                       class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <div class="flex justify-between items-center">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="remember" class="text-blue-500">
+                    <span class="ml-2 text-gray-600 text-sm">Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                Login
+</button>
+        </form>
+
+        <p class="text-center text-gray-600 text-sm mt-4">
+            Don't have an account? <a href="/register" class="text-blue-500 hover:underline">Sign up</a>
+        </p>
+    </div>
+
+</body>
+</html>
