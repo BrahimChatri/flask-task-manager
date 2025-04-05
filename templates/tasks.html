@@ -45,6 +45,10 @@
                        class="px-3 py-2 text-primary-100 hover:text-white transition-colors duration-200 rounded-md mx-2">
                         <i class="fas fa-home mr-1"></i> Home
                     </a>
+                    <a href="{{ url_for('views.profile') }}" 
+                        class="px-3 py-2 text-primary-100 hover:text-white transition-colors duration-200 rounded-md mx-2 flex items-center">
+                            <i class="fas fa-user-circle mr-1"></i> Profile
+                        </a>
                     <form action="{{ url_for('views.logout') }}" method="POST">
                         <button type="submit" 
                             class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">

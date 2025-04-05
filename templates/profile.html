@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-primary-700 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-tasks text-white text-2xl mr-2"></i>
+                        <span class="text-white text-xl font-bold">Task Manager</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="{{ url_for('views.home') }}" 
+                       class="px-3 py-2 text-primary-100 hover:text-white transition-colors duration-200 rounded-md mx-2">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="{{ url_for('views.get_tasks') }}" 
+                       class="px-3 py-2 text-primary-100 hover:text-white transition-colors duration-200 rounded-md mx-2">
+                        <i class="fas fa-list-check mr-1"></i> My Tasks
+                    </a>
+                    <form action="{{ url_for('views.logout') }}" method="POST">
+                        <button type="submit" 
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="bg-gradient-to-br from-primary-600 to-primary-800 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8 lg:py-16 relative z-10">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+                    Your Profile
+                </h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-primary-100">
+                    Manage your account information and preferences
+                </p>
+            </div>
+        </div>
+        
+        <!-- Wave Separator with darker color -->
+        <div class="relative h-16 -mt-10 z-0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="absolute bottom-0 w-full">
+                <path fill="#f9fafb" fill-opacity="1" 
+                      d="M0,96L48,112C96,128,192,160,288,170.7C384,181,480,171,576,144C672,117,768,75,864,74.7C960,75,1056,117,1152,122.7C1248,128,1344,96,1392,80L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+                </path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {% if error %}
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md" role="alert">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-md" role="alert">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Profile Card -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-1 bg-primary-400"></div>
+                <div class="p-6">
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="rounded-full bg-primary-100 p-6">
+                            <i class="fas fa-user text-primary-600 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">{{ user.name }}</h3>
+                        <p class="text-gray-500">{{ user.username }}</p>
+                        <p class="flex items-center text-gray-600">
+                            <i class="fas fa-envelope mr-2"></i> {{ user.email }}
+                        </p>
+                        <p class="text-sm text-gray-500 mt-2">Member since: {{ user.user_id|truncate(8, True, '') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Edit Form -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden md:col-span-2">
+                <div class="px-6 py-5 border-b border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-800">Update Profile</h3>
+                </div>
+                <div class="p-6">
+                    <form action="{{ url_for('views.profile') }}" method="POST">
+                        <div class="mb-6">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" name="name" id="name" value="{{ user.name }}" required
+                                class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border">
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" id="email" value="{{ user.email }}" required
+                                class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border">
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-4 mt-6">
+                            <h4 class="text-lg font-medium text-gray-700 mb-4">Change Password</h4>
+                            <p class="text-sm text-gray-500 mb-4">Leave blank if you don't want to change your password</p>
+                            
+                            <div class="mb-4">
+                                <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                                <input type="password" name="current_password" id="current_password"
+                                    class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                                <input type="password" name="new_password" id="new_password"
+                                    class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                                <input type="password" name="confirm_password" id="confirm_password"
+                                    class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-6">
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                <i class="fas fa-save mr-2"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Task Stats -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden md:col-span-3">
+                <div class="px-6 py-5 border-b border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-800">Your Task Statistics</h3>
+                </div>
+                <div class="p-6">
+                    {% if user.tasks %}
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-blue-800 font-medium">Total Tasks</p>
+                                    <p class="text-2xl font-bold text-blue-900">{{ user.tasks|length }}</p>
+                                </div>
+                                <div class="bg-blue-200 rounded-full p-3">
+                                    <i class="fas fa-clipboard-list text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-green-800 font-medium">Completed Tasks</p>
+                                    <p class="text-2xl font-bold text-green-900">{{ user.tasks|selectattr("completed", "equalto", True)|list|length }}</p>
+                                </div>
+                                <div class="bg-green-200 rounded-full p-3">
+                                    <i class="fas fa-check-circle text-green-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-amber-50 to-amber-100 p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-amber-800 font-medium">Pending Tasks</p>
+                                    <p class="text-2xl font-bold text-amber-900">{{ user.tasks|selectattr("completed", "equalto", False)|list|length }}</p>
+                                </div>
+                                <div class="bg-amber-200 rounded-full p-3">
+                                    <i class="fas fa-clock text-amber-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-purple-800 font-medium">Completion Rate</p>
+                                    <p class="text-2xl font-bold text-purple-900">
+                                        {% set completed = user.tasks|selectattr("completed", "equalto", True)|list|length %}
+                                        {% set total = user.tasks|length %}
+                                        {% if total > 0 %}
+                                            {{ ((completed / total) * 100)|round|int }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="bg-purple-200 rounded-full p-3">
+                                    <i class="fas fa-chart-pie text-purple-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-6">
+                        <p class="text-gray-500">No tasks yet. Add some tasks to see your stats!</p>
+                        <a href="{{ url_for('views.get_tasks') }}" 
+                           class="inline-flex items-center px-4 py-2 mt-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <i class="fas fa-plus mr-2"></i> Add Tasks
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-300 text-sm">
+                © 2025 Task Manager. All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
