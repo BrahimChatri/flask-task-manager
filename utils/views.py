@@ -80,7 +80,7 @@ def login():
         
     data = Storage.load_data(username)
     if not AuthenticationManager.compare_pass(password, data["password_hash"]):
-        logger.Warning_logger.warning(f"Failed login attempt for user: {username}")
+        logger.Info_logger.warning(f"Failed login attempt for user: {username}")
         return render_template("login.html", error="Invalid password, try again")
     
     # Set session data
@@ -141,7 +141,7 @@ def add_task():
         return render_template("tasks.html", tasks=tasks, error="Task name cannot be empty")
     
     # Check if task already exists
-    if any(task.get("task_name").strip() == task_name for task in tasks):
+    if any((task.get("task_name") or "").strip() == task_name for task in tasks):
         return render_template("tasks.html", tasks=tasks, error="Task already exists!")
     
     # Generate a unique task ID
