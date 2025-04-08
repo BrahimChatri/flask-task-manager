@@ -20,5 +20,5 @@ def not_found(e):
 # Vercel requires this as handler
 handler = app
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
