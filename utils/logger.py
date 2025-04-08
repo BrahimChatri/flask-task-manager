@@ -1,18 +1,24 @@
-"""Module for logging handling"""
-
 import logging
 
+# Create a formatter for both info and error logs
 logging_format = logging.Formatter("[%(asctime)s | %(name)s] %(message)s")
 second_format = logging.Formatter("-> %(message)s")
-Log_handler = logging.FileHandler("logs.log")
-Stream_handler = logging.StreamHandler()
-Stream_handler.setFormatter(second_format)
-Log_handler.setFormatter(logging_format)
+
+# Log handler for writing logs to /tmp/logs.log (Vercel allows writing to /tmp)
+log_handler = logging.FileHandler("/tmp/logs.log")
+
+# Stream handler to output logs to console (visible in Vercel logs)
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(second_format)
+
+# Setting up the Info logger
 Info_logger = logging.getLogger("INFO")
-Info_logger.setLevel(20)
-Info_logger.addHandler(Log_handler)
-Info_logger.addHandler(Stream_handler)
+Info_logger.setLevel(logging.INFO)  # INFO level is 20
+Info_logger.addHandler(log_handler)
+Info_logger.addHandler(stream_handler)
+
+# Setting up the Error logger
 Error_logger = logging.getLogger("ERROR")
-Error_logger.setLevel(40)
-Error_logger.addHandler(Log_handler)
-Error_logger.addHandler(Stream_handler)
+Error_logger.setLevel(logging.ERROR)  # ERROR level is 40
+Error_logger.addHandler(log_handler)
+Error_logger.addHandler(stream_handler)
