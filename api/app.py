@@ -1,8 +1,9 @@
 from flask import Flask, render_template
-from utils.views import views
 from dotenv import load_dotenv
-import os
+import os, sys
 from datetime import timedelta
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from utils.views import views
 
 load_dotenv()
 
@@ -19,5 +20,5 @@ def not_found(e):
 # Vercel requires this as handler
 handler = app
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
